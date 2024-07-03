@@ -88,7 +88,7 @@ public class ItunesDAO {
 			while (res.next()) {
 				result.add(new Track(res.getInt("TrackId"), res.getString("Name"), 
 						res.getString("Composer"), res.getInt("Milliseconds"), 
-						res.getInt("Bytes"),res.getDouble("UnitPrice")));
+						res.getInt("Bytes"),res.getDouble("UnitPrice"), res.getInt("MediaTypeId")));
 			
 			}
 			conn.close();
@@ -130,6 +130,32 @@ public class ItunesDAO {
 
 			while (res.next()) {
 				result.add(new MediaType(res.getInt("MediaTypeId"), res.getString("Name")));
+			}
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("SQL Error");
+		}
+		return result;
+	}
+	
+	public List<Track> getTracks(Genre g){
+		final String sql = "SELECT t.* "
+				+ "FROM track t "
+				+ "WHERE t.GenreId = ?";
+		List<Track> result = new ArrayList<Track>();
+		
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, g.getGenreId());
+			ResultSet res = st.executeQuery();
+
+			while (res.next()) {
+				result.add(new Track(res.getInt("TrackId"), res.getString("Name"), 
+						res.getString("Composer"), res.getInt("Milliseconds"), 
+						res.getInt("Bytes"),res.getDouble("UnitPrice"), res.getInt("MediaTypeId")));
+			
 			}
 			conn.close();
 		} catch (SQLException e) {

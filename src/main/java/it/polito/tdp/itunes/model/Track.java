@@ -1,5 +1,7 @@
 package it.polito.tdp.itunes.model;
 
+import java.util.Objects;
+
 public class Track {
 	private Integer trackId;
 	private String name;
@@ -7,8 +9,10 @@ public class Track {
 	private int milliseconds;
 	private int bytes;
 	private double unitPrice;
-	
-	public Track(Integer trackId, String name, String composer, int milliseconds, int bytes, double unitPrice) {
+	private int mediaType;
+
+	public Track(Integer trackId, String name, String composer, int milliseconds, int bytes, double unitPrice,
+			int mediaType) {
 		super();
 		this.trackId = trackId;
 		this.name = name;
@@ -16,11 +20,18 @@ public class Track {
 		this.milliseconds = milliseconds;
 		this.bytes = bytes;
 		this.unitPrice = unitPrice;
+		this.mediaType = mediaType;
 	}
-	
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
 	public Integer getTrackId() {
 		return trackId;
 	}
+
 	public void setTrackId(Integer trackId) {
 		this.trackId = trackId;
 	}
@@ -33,34 +44,47 @@ public class Track {
 	public String getComposer() {
 		return composer;
 	}
+
 	public void setComposer(String composer) {
 		this.composer = composer;
 	}
+
 	public int getMilliseconds() {
 		return milliseconds;
 	}
+
 	public void setMilliseconds(int milliseconds) {
 		this.milliseconds = milliseconds;
 	}
+
 	public int getBytes() {
 		return bytes;
 	}
+
 	public void setBytes(int bytes) {
 		this.bytes = bytes;
 	}
+
 	public double getUnitPrice() {
 		return unitPrice;
 	}
+
+
 	public void setUnitPrice(double unitPrice) {
 		this.unitPrice = unitPrice;
 	}
 
+	public int getMediaType() {
+		return mediaType;
+	}
+	
+	public void setMediaType(int mediaType) {
+		this.mediaType = mediaType;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((trackId == null) ? 0 : trackId.hashCode());
-		return result;
+		return Objects.hash(bytes, composer, mediaType, milliseconds, name, trackId, unitPrice);
 	}
 
 	@Override
@@ -72,18 +96,12 @@ public class Track {
 		if (getClass() != obj.getClass())
 			return false;
 		Track other = (Track) obj;
-		if (trackId == null) {
-			if (other.trackId != null)
-				return false;
-		} else if (!trackId.equals(other.trackId))
-			return false;
-		return true;
+		return bytes == other.bytes && Objects.equals(composer, other.composer) && mediaType == other.mediaType
+				&& milliseconds == other.milliseconds && Objects.equals(name, other.name)
+				&& Objects.equals(trackId, other.trackId)
+				&& Double.doubleToLongBits(unitPrice) == Double.doubleToLongBits(other.unitPrice);
 	}
-
-	@Override
-	public String toString() {
-		return name;
-	}
+	
 	
 	
 	

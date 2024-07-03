@@ -5,8 +5,13 @@
 package it.polito.tdp.itunes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.itunes.model.Arco;
+import it.polito.tdp.itunes.model.Genre;
 import it.polito.tdp.itunes.model.Model;
+import it.polito.tdp.itunes.model.Track;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -34,10 +39,10 @@ public class FXMLController {
     private Button btnMassimo; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbCanzone"
-    private ComboBox<?> cmbCanzone; // Value injected by FXMLLoader
+    private ComboBox<Track> cmbCanzone; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbGenere"
-    private ComboBox<?> cmbGenere; // Value injected by FXMLLoader
+    private ComboBox<Genre> cmbGenere; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtMemoria"
     private TextField txtMemoria; // Value injected by FXMLLoader
@@ -47,17 +52,47 @@ public class FXMLController {
 
     @FXML
     void btnCreaLista(ActionEvent event) {
+    	Track t = cmbCanzone.getValue();
+    	String input = txtMemoria.getText();
+    	if (t.equals(null) || input.compareTo("")==0) {
+    		txtResult.setText("Scegli una canzone e inserisci una memoria");
+    		return;
+    		
+    	}
+    	int memoria = 0;
+    	try {
+    		memoria =Integer.parseInt(input);
+    	}catch(NumberFormatException e ) {
+    		txtResult.setText("La memoria deve essere un numero intero");
+    		return;
+    	}
+    	txtResult.appendText("La lista delle canzoni è: "+"\n");
+    	List<Track> lista = model.trovaLista(t,memoria);
+    	for (Track traccia: lista) {
+    		txtResult.appendText(traccia+"\n");
+    	}
 
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	Genre g = cmbGenere.getValue();
+    	if (g.equals(null)) {
+    		txtResult.setText("Seleziona un genere");
+    		return;
+    	}
+    	model.creaGrafo(g);
+    	txtResult.appendText("Vertici: "+ model.getV()+"\n");
+    	txtResult.appendText("Archi: "+ model.getA()+"\n");
+    	cmbCanzone.getItems().addAll(model.getVertici());
     }
 
     @FXML
     void doDeltaMassimo(ActionEvent event) {
-    	
+    	List<Arco> archi = model.getMaxDelta();
+    	for (int i =0; i<archi.size();i++) {
+    		txtResult.appendText(archi.get(i)+"\n");
+    	}
     	
     }
 
@@ -75,6 +110,7 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	cmbGenere.getItems().addAll(model.getGeneri());
     }
 
 }
